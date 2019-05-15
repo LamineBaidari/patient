@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_cmk_patient,access.cmk.patient,model_cmk_patient,,1,1,1,1
+access_cmk_traitement,access.cmk.traitement,model_cmk_traitement,,1,1,1,1
+access_cmk_pathologie,access.cmk.pathologie,model_cmk_pathologie,,1,1,1,1

@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Racine du menu : Chez Mon Kine App Menu -->
+        <menuitem id="cmk_menu" name="Patient" sequence="40" groups="cmk_group_manager,cmk_group_user"/>
+
+        <!-- Vue Kanban -->
+        <record model="ir.ui.view" id="kanban_vue_patient">
+            <field name="name">cmk.patient.kanban</field>
+            <field name="model">cmk.patient</field>
+            <field name="arch" type="xml">
+                <kanban>
+                    <field name='id'/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_global_click">
+                                <div class="o_kanban_image">
+                                    <img t-att-src="kanban_image('cmk.patient', 'photo_patient', record.id.value)"/>
+                                </div>
+                                <div class="oe_kanban_details">
+                                    <strong>
+                                        <ul>
+                                            <li><field name="id_patient"/></li>
+                                            <li><field name="name"/> <field name="prenom"/> </li>
+                                            <li>Age: <field name="age"/></li>
+                                            <li>Sexe: <field name="genre"/></li>
+                                            <li>Kiné: <field name="kine_assigne"/></li>
+                                        </ul>
+                                    </strong>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Vue tree -->
+        <record id="vue_cmk_patient_tree" model="ir.ui.view">
+            <field name="name">cmk.patient.tree</field>
+            <field name="model">cmk.patient</field>
+            <field name="priority" eval="8" />
+            <field name="arch" type="xml">
+                <tree string="Patients">
+                    <field name="titre" />
+                    <field name="name" />
+                    <field name="prenom" />
+                    <field name="telephone"/>
+                    <field name="email"/>
+                    <field name="kine_assigne"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vue de recherche -->
+        <record id="vue_cmk_patient_search" model="ir.ui.view">
+            <field name="name">cmk.patient.search</field>
+            <field name="model">cmk.patient</field>
+            <field name="priority" eval="8" />
+            <field name="arch" type="xml">
+                <search string="Patients">
+                    <field name="state"/>
+                    <field name="titre"/>
+                     <field name="genre"/>
+                     <field name="age"/>
+                     <field name="adresse_pays"/>
+                     <field name="kine_assigne"/>
+                     <field name="adresse_ville"/>
+                    <newline />
+                    <group expand="0" string="Group By...">
+                        <filter name="state" string="Statut du patient"
+                            domain="[]" context="{'group_by':'state'}" />
+                        <filter name="kine_assigne" string="Kiné traitant"
+                            domain="[]" context="{'group_by':'kine_assigne'}" />
+                        <!--<filter name="age" string="Age du patient"
+                            domain="[]" context="{'group_by':'age'}" />-->
+                        <filter name="adresse_pays" string="Nationalité du patient"
+                            domain="[]" context="{'group_by':'adresse_pays'}" />
+                        <filter name="adresse_ville" string="Age du patient"
+                            domain="[]" context="{'group_by':'adresse_ville'}" />
+                        <filter name="titre" string="Titre du patient"
+                            domain="[]" context="{'group_by':'titre'}" />
+                        <filter name="genre" string="Genre du patient"
+                            domain="[]" context="{'group_by':'genre'}" />
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Vue formulaire -->
+        <record id="view_partner_form" model="ir.ui.view">
+            <field name="name">cmk.patient.form</field>
+            <field name="model">cmk.patient</field>
+            <field name="priority" eval="8"/>
+            <field name="arch" type="xml">
+                <form string="Patients">
+                    <header>
+                        <button string="Valider prescription" type="object" name="valide_prescription_progressbar" states="nouveau_client" class="oe_highlight"/>
+                        <button string="Traitement en cours" type="object" name="traitement_en_cours_progressbar" states="prescriptionV" class="oe_highlight"/>
+                        <button string="Terminé" type="object" name="termine_progressbar" states="patient_en_traitement" class="oe_highlight"/>
+
+                        <field name="state" widget="statusbar" 
+                        statusbar_visible="nouveau_client,prescriptionV,patient_en_traitement,patient_terminé" />
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" type="object" name="schedule_meeting" icon="fa-calendar" context="{'partner_id': active_id, 'partner_name': name}">
+                                    <field string="Rendez-vous" name="meeting_count" widget="statinfo"/>
+			                </button>
+
+                            <button type="object" class="oe_stat_button" icon="fa-pencil-square-o" name="action_view_partner_invoices" context="{'default_partner_id': active_id}">
+                                <div class="o_form_field o_stat_info">
+                                    <span class="o_stat_value">
+                                        <field name="total_invoiced" widget='monetary' options="{'currency_field': 'currency_id'}"/>
+                                    </span>
+                                    <span class="o_stat_text">Facturé</span>
+                                </div>
+                            </button>
+
+                            <button name="toggle_active" type="object" class="oe_stat_button" icon="fa-archive">
+                                <field name="active" widget="boolean_button" options='{"terminology": "archive"}'/>
+                            </button>
+
+                            <!--<button string="Rodolphe" name="print_pdf_report" type="object" class="oe_highlight" icon="fa-print"/>-->
+
+                        </div>
+                        <field name="photo_patient" widget='image' class="oe_avatar" options='{"preview_image": "image_medium", "size": [90, 90]}'/>
+                        <div class="oe_title">
+                            <!-- <field name="is_company" invisible="1"/>
+                            <field name="commercial_partner_id" invisible="1"/>
+                            <field name="company_type" widget="radio"
+                                class="oe_edit_only"
+                                options="{'horizontal': true}"/> -->
+                            <h1>
+                                <field name="name" default_focus="1" placeholder="Nom"/><!--attrs="{'required' : [('type', '=', 'contact')]}"-->
+                            </h1>
+                            <h1>
+                                <field name="prenom" default_focus="2" placeholder="Prénom"/>
+                            </h1>
+                            <field name="type_societe" widget="radio" class="oe_edit_only" 
+                                options="{'horizontal': true}"/>
+                            <!--<field name="societe_patient" string='RODOLPHE' options='{"no_open": True, "no_create": False}'/>
+                            <field name="societe_patient" string='RODOLPHE1'  domain="[('category_id', '=', 'IPM')]"/>-->
+
+                            <field name="societe_patient" placeholder='Societé' options='{"no_open": True, "no_create": False}' 
+                                attrs="{'invisible': [('type_societe','=', 'ipm')]}" domain="[('category_id', '=', 'Assurance')]"/>
+                                
+                            <field name="societe_patient" placeholder='Société...' options='{"no_open": True, "no_create": False}' 
+                                attrs="{'invisible': [('type_societe','=', 'assurance')]}" domain="[('category_id', '=', 'IPM')]"/>
+                        </div>
+
+                        <group>
+                            <group>
+                                <field name="id_patient"/>
+                                <field name="date_naissance"/>
+                                <field name="age"/>
+                                <field name="kine_assigne"/>
+                            </group>
+                            <group>
+                                <!--<field name="state"/>-->
+                                <field name="genre"/>
+                                <field name="titre"/>
+                            </group>
+                        </group>
+
+                        <notebook colspan="4">
+                            <page string="Informmations générales" autofocus="autofocus">
+                                <group>
+                                    <group>
+                                        <label for="adresse_rue" string="Adresse"/>
+                                        <div><!-- class="cmk_groupe_adresse" -->
+                                            <field name="adresse_rue" placeholder="Rue"/><br/>
+                                            <field name="adresse_ville" placeholder="Ville" class="cmk_address_ville"
+                                            /><br/><!--attrs="{'readonly': [('parent_id', '!=', False)]}"-->
+                                            <field name="adresse_pays" placeholder="Pays" class="cmk_address_pays" options='{"no_open": True, "no_create": True}'
+                                            /><br/><!--attrs="{'readonly': [('parent_id', '!=', False)]}"-->
+                                            <field name="adresse_postal" placeholder="Adresse postale"/><br/>
+                                        </div>
+                                    </group>
+                                    <group>
+                                        <field name="telephone"/>
+                                        <field name="email"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Historique médicales">
+                                <group string="Note médicale">
+                                    <field name="note_docteur" placeholder="Note du docteur..."/>
+                                </group>
+                                <group string="Suivi traitement">
+                                    <field name="suivi_traitement" >
+                                        <tree string="Suivi traitement lignes" editable="bottom">
+                                            <field name="date_seance"/>
+                                            <field name="traitement"/>
+                                            <field name="kine_assigne"/>
+                                            <field name="duree_seance" widget="timepicker"/>
+                                            <field name="presence_patient"/>
+                                        </tree>
+								    </field>
+                                </group>
+                            </page>
+                            <page string="Assurance">
+                                <!--<field name="comment" placeholder="Internal note..."/>-->
+                            </page>
+                            <page string="Pièces jointes">
+                                <group string="Prescription">
+                                    <!--<field name="comment" placeholder="Internal note..."/>-->
+                                </group>
+                                <group string="Rapport de traitement">
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids" widget="mail_followers" groups="base.group_user"/>
+                        <field name="activity_ids" widget="mail_activity"/>
+                        <field name="message_ids" widget="mail_thread"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!--    Déclaration de la vue pour l'action  -->
+        <record model="ir.actions.act_window" id="action_cmk_patient_vue">
+            <field name="name">Patients</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">cmk.patient</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">kanban,tree,form</field>
+            <!--<field name="search_view_id" ref="vue_cmk_patient_search" />-->
+            <field name="domain">[]</field>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                    Création/Gestion des patients.
+                </p>
+            </field>
+        </record>
+
+        <record model="ir.sequence" id="seq_cmk_patient">
+            <field name="name">Patient</field>
+            <field name="code">cmk.patient</field>
+            <field name="prefix">PAT</field>
+            <field name="padding">4</field>
+            <field name="company_id" eval="False"/>
+        </record>
+
+        <!-- Premier onglet "Patient" -->
+        <menuitem id="cmk_patient_menu" name="Patients" action="action_cmk_patient_vue"
+        parent="cmk_menu" sequence="10" groups="cmk_group_manager,cmk_group_user"/><!-- -->
+    </data>
+</odoo>

@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <data>
+
+    <!-- Chez Mon Kine App Menu -->
+    <menuitem id="configuration_menu" name="Configuration" parent="cmk_menu" sequence="100" groups="cmk_group_manager,cmk_group_user"/>
+    <!-- Chez Mon Kine App Menu -->
+
+    <record id="view_pathologie_tree" model="ir.ui.view">
+      <field name="name">cmk.pathologie.tree</field>
+      <field name="model">cmk.pathologie</field>
+      <field name="priority" eval="8" />
+      <field name="arch" type="xml">
+        <tree string="Pathologie">
+          <field name="id" />
+          <field name="name" />
+          <field name="prix" />
+
+          <field name="pathologie" />
+          <field name="note" />
+
+        </tree>
+      </field>
+    </record>
+
+
+    <record id="view_pathologie_form" model="ir.ui.view">
+      <field name="name">cmk.pathologie.form</field>
+      <field name="model">cmk.pathologie</field>
+      <field name="priority" eval="8" />
+      <field name="arch" type="xml">
+        <form string="Pathologie">
+          <sheet>
+
+            <notebook colspan="4">
+              <page name="personal_informations" string="Information_Pathologie">
+                <group>
+                  <group>
+                    <field name="name" />
+                    <field name="prix" />
+
+                  </group>
+                  <group>
+                    <field name="pathologie" />
+                    <field name="id" />
+                  </group>
+                </group>
+
+              </page>
+            </notebook>
+            <notebook>
+              <page string="Note">
+                <group>
+                  <field name="note"/>
+                </group>
+              </page>
+            </notebook>
+          </sheet>
+          <!--<div class="oe_chatter">
+            <field name="message_follower_ids" widget="mail_followers"/>
+            <field name="activity_ids" widget="mail_activity"/>
+            <field name="message_ids" widget="mail_thread"/>
+          </div>-->
+        </form>
+      </field>
+    </record>
+
+    <!-- Pathologies Menu -->
+    <record id="pathologies_menu_action" model="ir.actions.act_window">
+      <field name="name">Pathologies</field>
+      <field name="type">ir.actions.act_window</field>
+      <field name="res_model">cmk.pathologie</field>
+      <field name="view_type">form</field>
+      <field name="view_mode">tree,kanban,form</field>
+      <field name="help" type="html">
+        <p class="oe_view_nocontent_create">
+                      Créer des pathologies.
+        </p>
+      </field>
+    </record>
+
+    <menuitem id="pathologies_menu" sequence="10" parent="configuration_menu" name="Pathologies" 
+      action="pathologies_menu_action" groups="cmk_group_manager,cmk_group_user"/>
+
+  </data>
+</odoo>

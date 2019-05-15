@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="action_cmk_patient_facturation" model="ir.actions.act_window">
+            <field name="name">Facturation</field>
+            <field name="res_model">account.invoice</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+            <field eval="False" name="view_id"/>
+            <field name="domain">[('type','=','out_invoice')]</field>
+            <field name="context">{'type':'out_invoice', 'journal_type': 'sale'}</field>
+            <field name="search_view_id" ref="account.view_account_invoice_filter"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                Créer les factures patients.
+                </p>
+            </field>
+        </record>
+        <!--record id="action_invoice_tree1" model="ir.actions.act_window">
+            <field name="name">Invoices</field>
+            <field name="res_model">account.invoice</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,kanban,form,calendar,pivot,graph,activity</field>
+            <field eval="False" name="view_id"/>
+            <field name="domain">[('type','=','out_invoice')]</field>
+            <field name="context">{'type':'out_invoice', 'journal_type': 'sale'}</field>
+            <field name="search_view_id" ref="view_account_invoice_filter"/>
+            <field name="help" type="html">
+              <p class="o_view_nocontent_smiling_face">
+                Create a customer invoice
+              </p><p>
+                Create invoices, register payments and keep track of the discussions with your customers.
+              </p>
+            </field>
+        </record>-->
+        <!--<record id="action_cmk_patient_facturation" model="ir.actions.act_window">
+            <field name="name">Facturation</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="res_model">account.invoice</field>
+            <field name="view_type">form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="domain">[('is_patient','=',1)]</field>
+            <field name="context">{'default_customer':0, 'default_supplier':0 , 'default_is_patient':1}</field>
+            <field name="filter" eval="True"/>
+            <field name="help" type="html">
+                <p class="oe_view_nocontent_create">
+                        Créer des factures patients!
+                </p>
+            </field>
+            </record>-->
+
+        <menuitem id="cmk_facturation_menu" parent="cmk_menu" name="Facturation" action="action_cmk_patient_facturation" groups="cmk_group_manager,cmk_group_user"/>
+    </data>
+</odoo>
